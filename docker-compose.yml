@@ -1,0 +1,51 @@
+services:
+  backend:
+    image: tinouy/kegtracker-backend:0.1.0
+    container_name: kegtracker-backend
+    hostname: kegtracker-backend
+    restart: unless-stopped
+    environment:
+      - TZ=America/Montevideo
+      - PYTHONUNBUFFERED=1
+      - BACKEND_HOST=${BACKEND_HOST}
+      - BACKEND_PORT=${BACKEND_PORT}
+      - FRONTEND_HOST=${FRONTEND_HOST}
+      - FRONTEND_PORT=${FRONTEND_PORT}
+      - DB_ENGINE=${DB_ENGINE}
+      - DB_URL=${DB_URL}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - SMTP_FROM=${SMTP_FROM}
+      - SECRET_KEY=${SECRET_KEY}
+      - FRONTEND_FQDN=${FRONTEND_FQDN}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./kegtracker.db:/app/kegtracker.db  # Volumen persistente para la base de datos
+    networks:
+      - kegtracker-net
+
+  frontend:
+    image: tinouy/kegtracker-frontend:0.1.0
+    container_name: kegtracker-frontend
+    hostname: kegtracker-frontend
+    restart: unless-stopped
+    environment:
+      - TZ=America/Montevideo
+      - BACKEND_HOST=${BACKEND_HOST}
+      - BACKEND_PORT=${BACKEND_PORT}
+      - FRONTEND_HOST=${FRONTEND_HOST}
+      - FRONTEND_PORT=${FRONTEND_PORT}
+      - FRONTEND_FQDN=${FRONTEND_FQDN}
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - kegtracker-net
+
+networks:
+  kegtracker-net:
+    driver: bridge 
