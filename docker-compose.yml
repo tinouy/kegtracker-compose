@@ -1,6 +1,9 @@
 services:
   backend:
-    image: tinouy/kegtracker-backend:0.1.0
+    # Para demo: usar imagen con datos pre-cargados
+    image: tinouy/kegtracker-backend:demo
+    # Para producción 0.1.0: usar imagen limpia
+    #image: tinouy/kegtracker-backend:0.1.0
     container_name: kegtracker-backend
     hostname: kegtracker-backend
     restart: unless-stopped
@@ -22,13 +25,11 @@ services:
       - FRONTEND_FQDN=${FRONTEND_FQDN}
     ports:
       - "8000:8000"
-    volumes:
-      - ./kegtracker.db:/app/kegtracker.db  # Volumen persistente para la base de datos
     networks:
       - kegtracker-net
 
   frontend:
-    image: tinouy/kegtracker-frontend:0.1.0
+    image: tinouy/kegtracker-frontend:demo
     container_name: kegtracker-frontend
     hostname: kegtracker-frontend
     restart: unless-stopped
